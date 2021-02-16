@@ -17,9 +17,6 @@ source $ZSH/oh-my-zsh.sh
 
 PATH=$HOME/.local/bin:$PATH
 
-# User configuration
-cd ~
-
 alias tmux="TERM=screen-256color-bce tmux"
 alias python=python3
 alias pip=pip3
