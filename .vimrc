@@ -123,6 +123,7 @@ au BufNewFile,BufRead *.json set ft=json syntax=javascript
 
 call plug#begin('~/.vim/plugged')
 	Plug 'liuchengxu/space-vim-dark'
+	Plug 'sheerun/vim-polyglot'
 	Plug 'preservim/nerdtree'
 	Plug 'tpope/vim-surround'
 call plug#end()
