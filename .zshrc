@@ -16,10 +16,10 @@ alias ns="npm start"
 alias nb="npm run build"
 alias gs="git status"
 alias ga="git add -A"
-alias gc="gitmoji -c"
+alias gc="git commit"
 alias gp="git push"
 alias gu="gitupdate ."
-alias rmn="rm -rf node_modules"
+alias rmn="rm -rf node_modules && rm package-lock.json && rm yarn.lock"
 alias edithost="sudo vim /private/etc/hosts"
 
 export EDITOR='vim'
