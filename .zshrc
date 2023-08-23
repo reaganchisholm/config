@@ -19,7 +19,7 @@ alias ga="git add -A"
 alias gc="git commit"
 alias gp="git push"
 alias gu="gitupdate ."
-alias rmn="rm -rf node_modules && [ ! -e package-lock.json ] || rm package-lock.json && [ ! -e yarn.lock ] rm yarn.lock"
+alias rmn="rm -rf node_modules && [ ! -e package-lock.json ] || rm package-lock.json && [ ! -e yarn.lock ] || rm yarn.lock"
 alias edithost="sudo vim /private/etc/hosts"
 
 export EDITOR='vim'
