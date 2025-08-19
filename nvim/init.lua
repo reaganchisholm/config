@@ -92,20 +92,18 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- Window navigation with <leader> + arrow keys
+vim.keymap.set('n', '<leader><Left>', '<C-w><C-h>', { desc = 'Move focus to left window' })
+vim.keymap.set('n', '<leader><Right>', '<C-w><C-l>', { desc = 'Move focus to right window' })
+vim.keymap.set('n', '<leader><Down>', '<C-w><C-j>', { desc = 'Move focus to lower window' })
+vim.keymap.set('n', '<leader><Up>', '<C-w><C-k>', { desc = 'Move focus to upper window' })
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- Save file
+vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Save file' })
+-- Quit
+vim.keymap.set('n', '<leader>q', ':q<CR>', { desc = 'Quit' })
+-- Save and quit
+vim.keymap.set('n', '<leader>x', ':x<CR>', { desc = 'Save and quit' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -246,13 +244,27 @@ require('lazy').setup({
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          layout_config = {
+            preview_cutoff = 1,
+            width = 0.5,
+            height = 0.6,
+            prompt_position = 'top',
+          },
+          sorting_strategy = 'ascending',
+          preview = false,
+        },
+        pickers = {
+          find_files = {
+            previwer = false,
+          },
+          live_grep = {
+            previewer = false,
+          },
+          buffers = {
+            previwer = false,
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -507,6 +519,7 @@ require('lazy').setup({
       -- require('mason-lspconfig').setup { handlers = {} }
     end,
   },
+
   {
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
@@ -515,7 +528,31 @@ require('lazy').setup({
       'MunifTanjim/nui.nvim',
       'nvim-tree/nvim-web-devicons', -- optional, but recommended
     },
-    lazy = false, -- neo-tree will lazily load itself
+    lazy = false,
+    config = function()
+      require('neo-tree').setup {
+        close_if_last_window = true, -- closes Neo-tree if it's the last window
+        window = {
+          mappings = {
+            -- Override <CR> so it opens the file and closes Neo-tree
+            ['<cr>'] = function(state)
+              local node = state.tree:get_node()
+              if node.type == 'file' then
+                require('neo-tree.sources.filesystem.commands').open(state)
+                vim.cmd 'Neotree close'
+              else
+                state.commands['toggle_node'](state)
+              end
+            end,
+          },
+        },
+      }
+
+      -- 🔑 Keymap to toggle Neo-tree
+      vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle<CR>', {
+        desc = 'Toggle Neo-tree',
+      })
+    end,
   },
 
   { -- Autoformat
@@ -670,10 +707,10 @@ require('lazy').setup({
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
     config = function()
-      -- require('gruvbox').setup {
-      --   contrast = 'hard', -- optional
-      --   transparent_mode = true, -- optional
-      -- }
+      require('gruvbox').setup {
+        contrast = 'soft', -- optional
+        -- transparent_mode = true, -- optional
+      }
       vim.cmd.colorscheme 'gruvbox'
     end,
   },
